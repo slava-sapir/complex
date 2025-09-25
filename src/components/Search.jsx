@@ -39,7 +39,7 @@ const Search = () => {
           draft.requestCount++;
         };
       });
-    }, 3000);
+    }, 1000);
     return () => clearTimeout(delay);
    } else {
     setState((draft) => {
@@ -115,7 +115,7 @@ const Search = () => {
                       <small>&nbsp;&nbsp;&nbsp;Posted by {post.author.username}</small>
                     </Link>
                     )
-                  }) : <div className="list-group-item">Sorry, we could not find any results for that search.</div>}
+                  }) : <div className="alert alert-danger">Sorry, we could not find any results for that search.</div>}
                 </div>
               </div>
             </div>
