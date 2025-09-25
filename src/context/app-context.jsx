@@ -5,7 +5,8 @@ const AppContext = createContext();
 
 const initialState = {
   user: null,
-  flashMessages: []
+  flashMessages: [],
+  isSearchOpen: false
 };
 
 const reducer = (state, action) => {
@@ -29,6 +30,11 @@ const reducer = (state, action) => {
         ...state,
         flashMessages: state.flashMessages.filter(msg => msg.id !== action.id)
       };
+    case 'OPEN_SEARCH':
+      return { ...state, isSearchOpen: true };
+
+    case 'CLOSE_SEARCH':
+      return { ...state, isSearchOpen: false };
 
     default:
       return state;
@@ -50,6 +56,9 @@ export const AppProvider = ({ children }) => {
       });
     }
   }, []);
+
+  const openSearch = () => dispatch({ type: 'OPEN_SEARCH' });
+  const closeSearch = () => dispatch({ type: 'CLOSE_SEARCH' });
 
   const login = ({ token, username, avatar }) => {
     localStorage.setItem('complexappToken', token);
@@ -80,7 +89,10 @@ export const AppProvider = ({ children }) => {
         login,
         logout,
         flashMessages: state.flashMessages,
-        addFlashMessage
+        addFlashMessage,
+        isSearchOpen: state.isSearchOpen, 
+        openSearch,
+        closeSearch
       }}
     >
       {children}

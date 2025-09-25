@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+path/to/your/secret-file.ext
+info-cred.txt

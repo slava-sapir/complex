@@ -519,7 +519,14 @@ textarea.tall-textarea {
 }
 
 .custom-tooltip {
-  padding: 8px 10px !important;
+  padding: 5px 8px !important;
+  background-color:  #1E3A8A !important;
+  color: #fff !important;
+  font-size: 0.8rem !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  max-width: 200px !important;
+  text-align: center !important;
 }
 
 /* Dots Loading Animation */

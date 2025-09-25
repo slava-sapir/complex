@@ -16,17 +16,21 @@ const ViewSinglePost = () => {
   const [post, setPost] = useState();
 
   useEffect(() => {
+        const ourRequest = axios.CancelToken.source();
         async function fetchPost() {    
             try {
-            const response = await axios.get(`/post/${id}`);
+            const response = await axios.get(`/post/${id}`, { cancelToken: ourRequest.token });
             setPost(response.data);
             setIsLoading(false);
             } catch (e) {
                 console.error('Error fetching posts:', e);
             } 
         }
-        fetchPost();    
-  }, []); 
+        fetchPost();  
+        return () => {
+            ourRequest.cancel();
+        }  
+  }, [id]); 
 
  
   if(isLoading) return (
@@ -70,7 +74,7 @@ const ViewSinglePost = () => {
             <Link to={`/post/${post._id}/edit`} data-tooltip-content="Edit" data-tooltip-id="edit" className="text-primary mr-2" title="Edit">
               <i className="fas fa-edit"></i>
             </Link>
-            <ReactTooltip id="edit" className="custom-tooltip" />
+            <ReactTooltip id="edit" place="bottom" effect="float" className='custom-tooltip'/>
             <a onClick={deleteHandler} className="delete-post-button text-danger" data-tooltip-content="Delete" data-tooltip-id="delete" title="Delete">
               <i className="fas fa-trash"></i>
               <ReactTooltip id="delete" className="Delete" />
