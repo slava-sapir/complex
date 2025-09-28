@@ -30,6 +30,7 @@ const reducer = (state, action) => {
         ...state,
         flashMessages: state.flashMessages.filter(msg => msg.id !== action.id)
       };
+
     case 'OPEN_SEARCH':
       return { ...state, isSearchOpen: true };
 

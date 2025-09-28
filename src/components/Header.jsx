@@ -1,8 +1,8 @@
-import { useState } from  "react";
+// import { useState } from  "react";
 import { Link } from "react-router-dom";
 import HeaderLoggedOut from "./HeaderLoggedOut";
 import HeaderLoggedIn from "./HeaderLoggedIn";
-import { useAuth } from "../context/auth-context"; // ✅ import the context
+// import { useAuth } from "../context/auth-context"; // ✅ import the context
 import { useApp } from "../context/app-context";
 
 function Header () {
