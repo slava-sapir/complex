@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useApp } from '../context/app-context';
 import { useImmer } from 'use-immer';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import Post from './Post';
 
 const Search = () => {
   const { closeSearch  } = useApp();
@@ -54,7 +54,7 @@ const Search = () => {
       async function fetchResults() {
         try {
           const response = await axios.post('/search', { searchTerm: state.searchTerm }, { cancelToken: outRequest.token });
-          console.log(response.data);
+          console.log("fetchResults :",response.data);
           setState((draft) => {
             draft.results = response.data;
             draft.show = 'results';
@@ -104,17 +104,7 @@ const Search = () => {
               <div className="list-group shadow-sm">
                 <div className="list-group-item active"><strong>Search Results</strong> ({ state.results.length } { state.results.length === 1 ? 'result' : 'results' } found)</div>
                   {state.results.length ? state.results.map((post) => {
-                    return (
-                    <Link onClick={ () => closeSearch()} key={post._id} to={`/post/${post._id}`} className="list-group-item list-group-item-action flex-column align-items-start">
-                      <div className="d-flex w-100 justify-content-between">
-                          <h5 className="mb-1">{post.title}</h5>
-                          <small>{new Date(post.createdDate).toLocaleDateString()}</small>
-                      </div>
-                      {/* <p className="mb-1">{post.body}</p> */}
-                      <img className="avatar-tiny" src={post.author.avatar} />&nbsp;&nbsp;&nbsp;<strong>{post.title}</strong>
-                      <small>&nbsp;&nbsp;&nbsp;Posted by {post.author.username}</small>
-                    </Link>
-                    )
+                    return <Post post={post} key={post._id} onClick={closeSearch} />
                   }) : <div className="alert alert-danger">Sorry, we could not find any results for that search.</div>}
                 </div>
               </div>
