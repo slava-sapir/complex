@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const socket = io('http://localhost:8080');
 
 const Chat = () => {
- const { isChatOpen, closeChat, user, setChatCount, resetChatCount, unreadChatCount } = useApp();
+ const { isChatOpen, closeChat, user, setChatCount, resetChatCount } = useApp();
  const chatField = useRef(null);
  const chatLog = useRef(null);
  const [state, setState] = useImmer({
@@ -22,18 +22,22 @@ const Chat = () => {
   }, [isChatOpen]);
 
   useEffect(() => {
-    socket.on('chatFromServer', message => {
-      setState(draft => {
-        draft.chatMessages.push(message);
-      });
+  const handler = (message) => {
+    setState(draft => {
+      draft.chatMessages.push(message);
     });
-  }, []);
+
+    if (!isChatOpen) {
+      setChatCount();
+    }
+  };
+
+  socket.on("chatFromServer", handler);
+  return () => socket.off("chatFromServer", handler);
+}, [isChatOpen, setChatCount, setState]);
 
   useEffect(() => {
     chatLog.current.scrollTop = chatLog.current.scrollHeight;
-    if( state.chatMessages.length && !isChatOpen ){
-        setChatCount();
-     }
   }, [state.chatMessages]);
 
  const handleFieldChange = (e) => {
