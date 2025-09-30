@@ -6,7 +6,9 @@ const AppContext = createContext();
 const initialState = {
   user: null,
   flashMessages: [],
-  isSearchOpen: false
+  isSearchOpen: false,
+  isChatOpen: false,
+  unreadChatCount: 0
 };
 
 const reducer = (state, action) => {
@@ -37,6 +39,18 @@ const reducer = (state, action) => {
     case 'CLOSE_SEARCH':
       return { ...state, isSearchOpen: false };
 
+    case 'TOGGLE_CHAT':
+      return { ...state, isChatOpen: !state.isChatOpen };
+
+    case 'CLOSE_CHAT':
+      return { ...state, isChatOpen: false };
+
+    case 'SET_UNREAD_CHAT_COUNT':
+      return { ...state, unreadChatCount: (state.unreadChatCount+1)};
+
+    case 'RESET_UNREAD_CHAT_COUNT':
+      return { ...state, unreadChatCount: 0 };
+
     default:
       return state;
   }
@@ -60,7 +74,10 @@ export const AppProvider = ({ children }) => {
 
   const openSearch = () => dispatch({ type: 'OPEN_SEARCH' });
   const closeSearch = () => dispatch({ type: 'CLOSE_SEARCH' });
-
+  const toggleChat = () => dispatch({ type: 'TOGGLE_CHAT' });
+  const closeChat = () => dispatch({ type: 'CLOSE_CHAT' });
+  const setChatCount = () => dispatch({ type: 'SET_UNREAD_CHAT_COUNT' });
+  const resetChatCount = () => dispatch({ type: 'RESET_UNREAD_CHAT_COUNT' });
   const login = ({ token, username, avatar }) => {
     localStorage.setItem('complexappToken', token);
     localStorage.setItem('complexappUsername', username);
@@ -91,9 +108,15 @@ export const AppProvider = ({ children }) => {
         logout,
         flashMessages: state.flashMessages,
         addFlashMessage,
-        isSearchOpen: state.isSearchOpen, 
+        isSearchOpen: state.isSearchOpen,
         openSearch,
-        closeSearch
+        closeSearch,
+        isChatOpen: state.isChatOpen,
+        toggleChat,
+        closeChat,
+        unreadChatCount: state.unreadChatCount,
+        setChatCount,
+        resetChatCount
       }}
     >
       {children}
