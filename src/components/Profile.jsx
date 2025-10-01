@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import Page from './Page'
-import { useParams, NavLink, Routes, Route } from 'react-router-dom'
+import { useParams, NavLink, Routes, Route, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useApp } from '../context/app-context';
 import ProfilePosts from './ProfilePosts';
@@ -8,6 +8,7 @@ import { useImmer } from 'use-immer';
 import ProfileFollow from './ProfileFollow';
 
 const Profile = () => {
+  const navigate = useNavigate();
   const { username } = useParams();
   const { user, isLoggedIn } = useApp();
   const [ state, setState ] = useImmer({
@@ -107,46 +108,52 @@ useEffect(() => {
     });
   }
 
-  return (
-    <Page title="Your Profile">
-       <h2>
-        <img className="avatar-small" src={state.profileData.profileAvatar} /> { state.profileData.profileUsername }'s profile
-          { isLoggedIn && user.username !== state.profileData.profileUsername && !state.profileData.isFollowing && 
-          state.profileData.profileUserName !== "..." && 
-          (
-            <button onClick={startFollowing} disabled={state.followActionLoading} className="btn btn-primary btn-sm ml-2">
-              Follow <i className="fas fa-user-plus"></i>
-            </button>
-          )}
-          { isLoggedIn && user.username !== state.profileData.profileUsername && state.profileData.isFollowing && 
-          state.profileData.profileUserName !== "..." && 
-          (
-            <button onClick={stopFollowing} disabled={state.followActionLoading} className="btn btn-danger btn-sm ml-2">
-              Stop Follow <i className="fas fa-user-times"></i>
-            </button>
-          )}
-      </h2>
+  if(isLoggedIn) {
+    return (
+      <Page title="Your Profile">
+        <h2>
+          <img className="avatar-small" src={state.profileData.profileAvatar} /> { state.profileData.profileUsername }'s profile
+            { isLoggedIn && user.username !== state.profileData.profileUsername && !state.profileData.isFollowing && 
+            state.profileData.profileUserName !== "..." && 
+            (
+              <button onClick={startFollowing} disabled={state.followActionLoading} className="btn btn-primary btn-sm ml-2">
+                Follow <i className="fas fa-user-plus"></i>
+              </button>
+            )}
+            { isLoggedIn && user.username !== state.profileData.profileUsername && state.profileData.isFollowing && 
+            state.profileData.profileUserName !== "..." && 
+            (
+              <button onClick={stopFollowing} disabled={state.followActionLoading} className="btn btn-danger btn-sm ml-2">
+                Stop Follow <i className="fas fa-user-times"></i>
+              </button>
+            )}
+        </h2>
 
-      <div className="profile-nav nav nav-tabs pt-2 mb-4">
-        <NavLink to={"/profile/" + state.profileData.profileUsername} end className="nav-item nav-link">
-          Posts: {state.profileData.counts.postCount}
-        </NavLink>
-        <NavLink to={"/profile/" + state.profileData.profileUsername  + "/followers"} className="nav-item nav-link">
-          Followers: {state.profileData.counts.followerCount}
-        </NavLink>
-        <NavLink to={"/profile/" + state.profileData.profileUsername  + "/following"} className="nav-item nav-link">
-          Following: {state.profileData.counts.followingCount}
-        </NavLink>
-      </div>
+        <div className="profile-nav nav nav-tabs pt-2 mb-4">
+          <NavLink to={"/profile/" + state.profileData.profileUsername} end className="nav-item nav-link">
+            Posts: {state.profileData.counts.postCount}
+          </NavLink>
+          <NavLink to={"/profile/" + state.profileData.profileUsername  + "/followers"} className="nav-item nav-link">
+            Followers: {state.profileData.counts.followerCount}
+          </NavLink>
+          <NavLink to={"/profile/" + state.profileData.profileUsername  + "/following"} className="nav-item nav-link">
+            Following: {state.profileData.counts.followingCount}
+          </NavLink>
+        </div>
 
-      {/* <ProfilePosts /> */}
-      <Routes>
-        <Route path="" element={<ProfilePosts />} />
-        <Route path="followers" element={<ProfileFollow type="followers" />} />
-        <Route path="following" element={<ProfileFollow type="following" />} />
-      </Routes>
-    </Page>
-  )
+        {/* <ProfilePosts /> */}
+        <Routes>
+          <Route path="" element={<ProfilePosts />} />
+          <Route path="followers" element={<ProfileFollow type="followers" />} />
+          <Route path="following" element={<ProfileFollow type="following" />} />
+        </Routes>
+      </Page>
+    )
+  } else {
+    navigate('/');
+    return null;
+  }
+  
 }
 
 export default Profile
