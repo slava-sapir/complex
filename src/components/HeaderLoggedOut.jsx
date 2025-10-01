@@ -22,7 +22,6 @@ const handleSubmit = async (e) => {
       } 
         else {
             addFlashMessage("Invalid username or password.", 'danger');
-            console.error("Login failed: Invalid response data", response.data);
         }
     } catch (e) {
       addFlashMessage("Login failed. Please try again.", 'danger');

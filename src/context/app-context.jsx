@@ -5,6 +5,7 @@ const AppContext = createContext();
 
 const initialState = {
   user: null,
+  isLoggedIn: false,
   flashMessages: [],
   isSearchOpen: false,
   isChatOpen: false,
