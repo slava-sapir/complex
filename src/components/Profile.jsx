@@ -24,6 +24,12 @@ const Profile = () => {
   });
 
 useEffect(() => {
+  if (!isLoggedIn) {
+    navigate('/', { replace: true });
+  }
+}, [isLoggedIn, navigate]);
+
+useEffect(() => {
   const ourRequest = axios.CancelToken.source()
   async function fetchData() {
     try {
@@ -108,7 +114,10 @@ useEffect(() => {
     });
   }
 
-  if(isLoggedIn) {
+  // if(!isLoggedIn) {
+  //   navigate('/');
+  //   return null;
+  // }
     return (
       <Page title="Your Profile">
         <h2>
@@ -149,11 +158,6 @@ useEffect(() => {
         </Routes>
       </Page>
     )
-  } else {
-    navigate('/');
-    return null;
-  }
-  
 }
 
 export default Profile

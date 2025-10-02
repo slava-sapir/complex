@@ -15,12 +15,15 @@ import { AppProvider } from './context/app-context.jsx';
 import Profile from './components/Profile.jsx';
 import EditPost from './components/EditPost.jsx';
 import NotFound from './components/NotFound.jsx';
+import PrivateRoute from './components/PrivateRoute.jsx';
 
 const router = createBrowserRouter(createRoutesFromElements(
 
   <Route path='/' element={<App />} >
      <Route index element={<HomeRoute />} />
-     <Route path='/profile/:username/*' element={<Profile />} />
+     <Route path='/profile/:username/*' element={
+      <PrivateRoute><Profile /></PrivateRoute>
+      } />
      <Route path='/create-post' element={<CreatePost />} />
      <Route path='/post/:id' element={<ViewSinglePost />} />
      <Route path='/post/:id/edit' element={<EditPost />} />
