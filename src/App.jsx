@@ -7,9 +7,10 @@ import FlashMessage from './components/FlashMessage.jsx';
 import { useApp } from './context/app-context.jsx'; // ✅ unified context
 import Search from './components/Search.jsx'; // ✅ added Search component
 import { CSSTransition } from 'react-transition-group';
-import Chat from './components/Chat.jsx';
+const Chat = React.lazy(() => import('./components/Chat.jsx')); // ✅ lazy load Chat component
+// import Chat from './components/Chat.jsx';
 const App = () => {
-  const { isSearchOpen, flashMessages }  = useApp();
+  const { isSearchOpen, flashMessages, isLoggedIn }  = useApp();
   const searchRef = useRef(null);
 
   return (
@@ -22,7 +23,7 @@ const App = () => {
         <Search />
       </div>
     </CSSTransition>
-    <Chat/>
+    { isLoggedIn && <Chat/>}
     <Footer />
     </>
   )
