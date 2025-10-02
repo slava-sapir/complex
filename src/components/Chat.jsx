@@ -3,9 +3,9 @@ import { useApp } from '../context/app-context'
 import { useImmer } from 'use-immer';
 import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
-const socket = io('http://localhost:8080');
 
 const Chat = () => {
+ const socket = useRef(null);
  const { isChatOpen, closeChat, user, setChatCount, resetChatCount } = useApp();
  const chatField = useRef(null);
  const chatLog = useRef(null);
@@ -22,6 +22,7 @@ const Chat = () => {
   }, [isChatOpen]);
 
   useEffect(() => {
+  socket.current = io('http://localhost:8080');
   const handler = (message) => {
     setState(draft => {
       draft.chatMessages.push(message);
@@ -32,8 +33,8 @@ const Chat = () => {
     }
   };
 
-  socket.on("chatFromServer", handler);
-  return () => socket.off("chatFromServer", handler);
+  socket.current.on("chatFromServer", handler);
+  return () => socket.current.off("chatFromServer", handler);
 }, [isChatOpen, setChatCount, setState]);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const Chat = () => {
  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit('chatFromBrowser', { message: state.fieldValue, token: user.token });
+    socket.current.emit('chatFromBrowser', { message: state.fieldValue, token: user.token });
 
     setState(draft => {
       draft.chatMessages.push({ message:draft.fieldValue, username: user.username, avatar: user.avatar });
