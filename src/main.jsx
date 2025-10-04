@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL || "";
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import './App.css'
