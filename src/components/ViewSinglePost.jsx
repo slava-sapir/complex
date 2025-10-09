@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Page from './Page'
 import axios from 'axios'
 import { useParams, Link, useNavigate } from 'react-router-dom'  
@@ -10,10 +10,16 @@ import { useApp } from '../context/app-context';
 
 const ViewSinglePost = () => {
   const navigate = useNavigate();
-  const useContext = useApp();
+  const {user, isLoggedIn, addFlashMessage } = useApp();
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [post, setPost] = useState();
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/', { replace: true });
+    }
+  }, [isLoggedIn, navigate]);
 
   useEffect(() => {
         const ourRequest = axios.CancelToken.source();
@@ -43,8 +49,8 @@ const ViewSinglePost = () => {
   )
 
   function isAuthor() {
-    if(useContext.isLoggedIn) {
-       return post.author?.username === useContext.user?.username;   
+    if(isLoggedIn) {
+       return post.author?.username === user?.username;   
     }
     return false;
   } 
@@ -53,10 +59,10 @@ const ViewSinglePost = () => {
     const confirm = window.confirm("Are you sure you want to delete this post?");
     if (confirm) {
       try {
-        const response = await axios.delete(`/post/${id}`, { data: { token: useContext.user.token } });
+        const response = await axios.delete(`/post/${id}`, { data: { token: user.token } });
         if (response.data === "Success") {
-          useContext.addFlashMessage('Post was successfully deleted.', 'success');
-          navigate(`/profile/${useContext.user.username}`);
+          addFlashMessage('Post was successfully deleted.', 'success');
+          navigate(`/profile/${user.username}`);
         }
       } catch (e) {
         console.error('Error deleting post:', e);
@@ -75,9 +81,12 @@ const ViewSinglePost = () => {
               <i className="fas fa-edit"></i>
             </Link>
             <ReactTooltip id="edit" place="bottom" effect="float" className='custom-tooltip'/>
-            <a onClick={deleteHandler} className="delete-post-button text-danger" data-tooltip-content="Delete" data-tooltip-id="delete" title="Delete">
+            <a onClick={deleteHandler} 
+            className="delete-post-button text-danger" 
+            data-tooltip-content="Delete"
+            data-tooltip-id="delete" title="Delete">
               <i className="fas fa-trash"></i>
-              <ReactTooltip id="delete" className="Delete" />
+            <ReactTooltip id="delete" className="Delete" />
             </a>
           </span>
           </>
